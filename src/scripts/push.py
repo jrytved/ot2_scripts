@@ -45,61 +45,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 	target_wells = ["A1"]
 
-
-	for well in target_wells:
-
-		w = stagetip_stack[well]
-		top = w.top()
-
-		basepoint = -33
-
-		eq_loc = top.move(types.Point(x=0, y=0, z=basepoint))
-		sample_loc = top.move(types.Point(x=0, y=0, z=basepoint+10))
-		wash_loc = top.move(types.Point(x=0, y=0, z=basepoint+20))
-
-		# Add eq. buffer A
-
-		pipette_300.pick_up_tip()
-		pipette_300.move_to(reservoir["A1"].top(), speed=50)
-		pipette_300.aspirate(20, reservoir["A1"].bottom(2), rate=0.2)
-		protocol.delay(2)
-
-		pipette_300.move_to(top, speed=50)
-		pipette_300.move_to(eq_loc, speed=4)
-		pipette_300.dispense(20, rate=0.4)
-		pipette_300.move_to(top, speed=10)
-
-		pipette_300.return_tip()
-
-		# Add the sample
-
-		pipette_20.pick_up_tip()
-		pipette_20.move_to(reservoir["A1"].top())
-		pipette_20.aspirate(20, reservoir["A1"].bottom(2), rate=0.4)
-		pipette_20.move_to(top, speed=50)
-		pipette_20.move_to(sample_loc, speed=4)
-		pipette_20.dispense(20, rate=0.2)
-		pipette_20.move_to(top, speed=10)
-
-		pipette_20.return_tip()
-
-		# Add the wash in three steps
-
-		pipette_300.pick_up_tip()
-		pipette_300.move_to(reservoir["A1"].top(), speed=50)
-		pipette_300.aspirate(50, reservoir["A1"].bottom(2), rate=0.4)
-		pipette_300.move_to(top, speed=50)
-		
-		pipette_300.move_to(wash_loc, speed=4)
-		pipette_300.dispense(50, rate=0.4)
-
-		pipette_300.move_to(top, speed=10)
-		pipette_300.return_tip()
-
-
-	# Try to pick up some of the stage-tips
-
-	PUSH_SAMPLE = False
+	PUSH_SAMPLE = True
 
 	if PUSH_SAMPLE:
 
@@ -109,20 +55,40 @@ def run(protocol: protocol_api.ProtocolContext):
 		for well_idx in target_wells:
 
 			loc = stagetip_stack[well_idx]
-
-			pipette_300.pick_up_tip(loc)
-
 			hardware_api = protocol._hw_manager.hardware
 			p300Mount = pipette_300.mount.lower() == 'left' and Mount.LEFT or Mount.RIGHT
 			hardware_api.add_tip(mount=p300Mount, tip_length=50)
-			pipette_300.move_to(loc.top(30))
-			pipette_300.move_to(loc.bottom(-10))
+			pipette_300.move_to(loc.top())
+			pipette_300.move_to(loc.top(-45), speed=40)
+			pipette_300.move_to(loc.top(-50), speed=4)
+
+			# Position for tip pick, aspirate air
 			hardware_api.prepare_for_aspirate(mount=p300Mount)
-			hardware_api.aspirate(mount=p300Mount, volume=200, rate=10)
-			hardware_api.dispense(mount=p300Mount, volume=250, rate=100)
-			protocol.delay(seconds=60)
-			pipette_300.move_to(loc.bottom(-25), speed=20)
+			hardware_api.aspirate(mount=p300Mount, volume=300)
+
+			# Actually load the tips
+			protocol.delay(1)
+			pipette_300.move_to(loc.top(-60), speed=10)
+
+			# Go back up and dispense some air
+			pipette_300.move_to(loc.top(-10), speed=10)
+			hardware_api.dispense(mount=p300Mount, volume=300)
+
+			# And wait
+			protocol.delay(100)	
+
+			# Move back up and drop tips
+			pipette_300.move_to(loc.top(-40), speed=2)
+			protocol.delay(1)
 			hardware_api.drop_tip(mount=p300Mount, home_after=False)
+			#pipette_300.move_to(loc.top())
+			#pipette_300.move_to(loc.top(-5), speed=4)
+			#hardware_api.prepare_for_aspirate(mount=p300Mount)
+			#hardware_api.aspirate(mount=p300Mount, volume=200, rate=10)
+			#hardware_api.dispense(mount=p300Mount, volume=200, rate=100)
+			#protocol.delay(seconds=60)
+			#pipette_300.move_to(loc.top(5), speed=4)
+			#hardware_api.drop_tip(mount=p300Mount, home_after=False)
 			protocol.home()
 
 
