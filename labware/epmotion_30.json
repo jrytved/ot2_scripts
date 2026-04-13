@@ -1,0 +1,92 @@
+{
+    "ordering": [
+        [
+            "A1"
+        ],
+        [
+            "A2"
+        ],
+        [
+            "A3"
+        ]
+    ],
+    "brand": {
+        "brand": "Eppendorf",
+        "brandId": [
+            "EpMotion 30mL"
+        ]
+    },
+    "metadata": {
+        "displayName": "EpMotion 30mL",
+        "displayCategory": "reservoir",
+        "displayVolumeUnits": "µL",
+        "tags": []
+    },
+    "dimensions": {
+        "xDimension": 127.76,
+        "yDimension": 85.48,
+        "zDimension": 62
+    },
+    "wells": {
+        "A1": {
+            "depth": 53,
+            "totalLiquidVolume": 35000,
+            "shape": "rectangular",
+            "xDimension": 12.75,
+            "yDimension": 75.48,
+            "x": 35.81,
+            "y": 42.74,
+            "z": 9
+        },
+        "A2": {
+            "depth": 53,
+            "totalLiquidVolume": 35000,
+            "shape": "rectangular",
+            "xDimension": 12.75,
+            "yDimension": 75.48,
+            "x": 63.87,
+            "y": 42.74,
+            "z": 9
+        },
+        "A3": {
+            "depth": 53,
+            "totalLiquidVolume": 35000,
+            "shape": "rectangular",
+            "xDimension": 12.75,
+            "yDimension": 75.48,
+            "x": 91.93,
+            "y": 42.74,
+            "z": 9
+        }
+    },
+    "groups": [
+        {
+            "metadata": {
+                "wellBottomShape": "flat"
+            },
+            "wells": [
+                "A1",
+                "A2",
+                "A3"
+            ]
+        }
+    ],
+    "parameters": {
+        "format": "irregular",
+        "quirks": [
+            "centerMultichannelOnWells",
+            "touchTipDisabled"
+        ],
+        "isTiprack": false,
+        "isMagneticModuleCompatible": false,
+        "loadName": "epmotion_30"
+    },
+    "namespace": "custom_beta",
+    "version": 1,
+    "schemaVersion": 2,
+    "cornerOffsetFromSlot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+    }
+}
